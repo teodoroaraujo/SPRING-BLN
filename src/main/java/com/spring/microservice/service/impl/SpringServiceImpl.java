@@ -29,12 +29,15 @@ public class SpringServiceImpl implements SpringService
     @Async
     public CompletableFuture<UserResponse> getUser()
     {
+        log.info("Get user with url {}", USER_URL);
         UserResponse results = restTemplate.getForObject(USER_URL, UserResponse.class);
+        
         return CompletableFuture.completedFuture(results);
     }
     
     @Async
     public CompletableFuture<UserResponse> getCommentByUser(UserResponse user) {
+        log.info("Get comments with url {}", COMMENT_URL);
         UserComment[] comments = restTemplate.getForObject(COMMENT_URL, UserComment[].class);
         user.setComments(Arrays.asList(comments));
         return CompletableFuture.completedFuture(user);
