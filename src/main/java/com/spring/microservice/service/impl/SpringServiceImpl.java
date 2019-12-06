@@ -1,10 +1,13 @@
 package com.spring.microservice.service.impl;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.spring.microservice.response.UserComment;
 import com.spring.microservice.response.UserResponse;
 import com.spring.microservice.service.SpringService;
 
@@ -23,15 +26,17 @@ public class SpringServiceImpl implements SpringService
     
     
     @Override
+    @Async
     public CompletableFuture<UserResponse> getUser()
     {
-        // TODO Auto-generated method stub
-        return null;
+        UserResponse results = restTemplate.getForObject(USER_URL, UserResponse.class);
+        return CompletableFuture.completedFuture(results);
     }
-    @Override
-    public CompletableFuture<UserResponse> getCommentByUser(UserResponse user)
-    {
-        // TODO Auto-generated method stub
-        return null;
+    
+    @Async
+    public CompletableFuture<UserResponse> getCommentByUser(UserResponse user) {
+        UserComment[] comments = restTemplate.getForObject(COMMENT_URL, UserComment[].class);
+        user.setComments(Arrays.asList(comments));
+        return CompletableFuture.completedFuture(user);
     }
 }
